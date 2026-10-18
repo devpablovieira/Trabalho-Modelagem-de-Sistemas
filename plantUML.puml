@@ -1,0 +1,99 @@
+@startuml SistemaEleitoral
+
+enum CargoPolitico {
+   PRESIDENTE
+   SENADOR
+   DEPUTADO_FEDERAL
+   GOVERNADOR
+   DEPUTADO_ESTADUAL
+}
+
+enum TipoVoto {
+   NUMERO_CANDIDATO
+   BRANCO
+   NULO
+}
+
+class Candidato {
+        -cargoPolitico: CargoPolitico
+        -numeroCandidato: int
+        -nome: String
+        -foto: Imagem
+        -estadoDaFederacao: String
+}
+class Eleitor {
+        -cpfOuRg: String
+        -tituloDeEleitor: String
+        -nomeCompleto: String
+        -dataNascimento: Data
+        -sexo: String
+        -raca: String
+        -municipioVoto: String
+        -zonaEleitoral: String
+        -secaoEleitoral: String
+        +apresentarIdentificacao()
+    }
+class MembroMesaEleitoral {
+        +cadastrarCandidato(dados: Candidato)
+        +cadastrarEleitor(dados: Eleitor)
+        +apresentarDispositivoParaAssinatura(sumula: SumulaComparecimento)
+        +liberarVotacao(eleitor: Eleitor)
+        +imprimirResultadoApuracao()
+        +digitarAtaEletronica(ata: AtaEletronica)
+        +assinarAtaEletronica(ata: AtaEletronica)
+}
+
+class SumulaComparecimento {
+        -assinaturaEletronica: Assinatura
+        +coletarAssinatura(eleitor: Eleitor)
+}
+
+class ModuloVotacao {
+        -horarioInicio: Hora = 08:00
+        -horarioTermino: Hora = 17:00
+        +validarHorario()
+        +exibirCampoNumerico()
+        +exibirNomeEFoto(candidato: Candidato)
+        +registrarVoto(voto: Voto)
+        +emitirAlertaSonoro()
+        +eliminarDadosDaEleicao()
+}
+
+class Voto {
+        -cargo: CargoPolitico
+        -tipo: TipoVoto
+        +confirmar()
+}
+
+class RelatorioApuracao {
+        -cargoPolitico: CargoPolitico
+        -numeroCandidato: int
+        -nomeCandidato: String
+        -quantidadeDeVotos: int
+        -percentualDeVotos: float
+        +ordenarDecrescentePorVotos()
+}
+
+class AtaEletronica {
+        -textoOficializacao: String
+        -assinaturas: List~Assinatura~
+}
+
+    Candidato "*" -- "1" CargoPolitico : concorre a
+    ModuloVotacao "1" -- "*" Candidato : armazena
+    ModuloVotacao "1" -- "*" Eleitor : armazena
+   
+ 
+    ModuloVotacao "1" -- "*" Voto : computa
+    Voto "*" --> "0..1" Candidato : computado para
+    Voto "*" -- "1" CargoPolitico : referente ao cargo
+    Voto "*" -- "1" TipoVoto : classificado como
+   
+    Eleitor "1" -- "1" SumulaComparecimento : assina
+    MembroMesaEleitoral "1" -- "1" SumulaComparecimento : controla
+   
+    ModuloVotacao "1" -- "1" RelatorioApuracao : gera
+    ModuloVotacao "1" -- "1" AtaEletronica : oficializa via
+    MembroMesaEleitoral "1..*" -- "1" AtaEletronica : digita e assina
+
+@enduml
