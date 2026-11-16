@@ -1,99 +1,56 @@
-@startuml SistemaEleitoral
+@startuml SistemaGestao
 
-enum CargoPolitico {
-   PRESIDENTE
-   SENADOR
-   DEPUTADO_FEDERAL
-   GOVERNADOR
-   DEPUTADO_ESTADUAL
+class Administrador {
+    -nome: String
+    -usuario: String
+    -senha: String
+    -numeroWhatsapp: String
+    +autenticar(usuario: String, senha: String): boolean
 }
 
-enum TipoVoto {
-   NUMERO_CANDIDATO
-   BRANCO
-   NULO
+class Produto {
+    -nome: String
+    -descricao: String
+    -tipo: String
+    -imagens: List<String>
+    -ativo: boolean  
+    ' +cadastrarProduto()
+    ' +visualizarProduto()
+    ' +atualizarProduto()
+    ' +excluirProduto()
+    +inativar(): void
+    +adicionarItemFicha(material: Material, qtd: double): void
+
 }
 
-class Candidato {
-        -cargoPolitico: CargoPolitico
-        -numeroCandidato: int
-        -nome: String
-        -foto: Imagem
-        -estadoDaFederacao: String
-}
-class Eleitor {
-        -cpfOuRg: String
-        -tituloDeEleitor: String
-        -nomeCompleto: String
-        -dataNascimento: Data
-        -sexo: String
-        -raca: String
-        -municipioVoto: String
-        -zonaEleitoral: String
-        -secaoEleitoral: String
-        +apresentarIdentificacao()
-    }
-class MembroMesaEleitoral {
-        +cadastrarCandidato(dados: Candidato)
-        +cadastrarEleitor(dados: Eleitor)
-        +apresentarDispositivoParaAssinatura(sumula: SumulaComparecimento)
-        +liberarVotacao(eleitor: Eleitor)
-        +imprimirResultadoApuracao()
-        +digitarAtaEletronica(ata: AtaEletronica)
-        +assinarAtaEletronica(ata: AtaEletronica)
+class ItemFichaTecnica {
+    -quantidadePorUnidade: double
+    ' +visualizarFicha()
 }
 
-class SumulaComparecimento {
-        -assinaturaEletronica: Assinatura
-        +coletarAssinatura(eleitor: Eleitor)
+class Material {
+    -nome: String
+    -quantidade: double
+    -unidadeMedida: String
+    -estoqueMinimo: double  
+    -ativo: boolean
+    ' +cadastrarMaterial()
+    ' +visualizarMaterial()
+    ' +atualizarMaterial()
+    ' +excluirMaterial()
+    +inativar(): void
+    +baixarEstoque(qtd: double): void
+    +possuiSaldo(qtd: double): boolean
 }
 
-class ModuloVotacao {
-        -horarioInicio: Hora = 08:00
-        -horarioTermino: Hora = 17:00
-        +validarHorario()
-        +exibirCampoNumerico()
-        +exibirNomeEFoto(candidato: Candidato)
-        +registrarVoto(voto: Voto)
-        +emitirAlertaSonoro()
-        +eliminarDadosDaEleicao()
+class Venda {
+    -quantidade: int
+    -valor: double
+    -data: Date
+    +registrarVenda(aceitarSaldoNegativo: boolean): void
 }
 
-class Voto {
-        -cargo: CargoPolitico
-        -tipo: TipoVoto
-        +confirmar()
-}
-
-class RelatorioApuracao {
-        -cargoPolitico: CargoPolitico
-        -numeroCandidato: int
-        -nomeCandidato: String
-        -quantidadeDeVotos: int
-        -percentualDeVotos: float
-        +ordenarDecrescentePorVotos()
-}
-
-class AtaEletronica {
-        -textoOficializacao: String
-        -assinaturas: List~Assinatura~
-}
-
-    Candidato "*" -- "1" CargoPolitico : concorre a
-    ModuloVotacao "1" -- "*" Candidato : armazena
-    ModuloVotacao "1" -- "*" Eleitor : armazena
-   
- 
-    ModuloVotacao "1" -- "*" Voto : computa
-    Voto "*" --> "0..1" Candidato : computado para
-    Voto "*" -- "1" CargoPolitico : referente ao cargo
-    Voto "*" -- "1" TipoVoto : classificado como
-   
-    Eleitor "1" -- "1" SumulaComparecimento : assina
-    MembroMesaEleitoral "1" -- "1" SumulaComparecimento : controla
-   
-    ModuloVotacao "1" -- "1" RelatorioApuracao : gera
-    ModuloVotacao "1" -- "1" AtaEletronica : oficializa via
-    MembroMesaEleitoral "1..*" -- "1" AtaEletronica : digita e assina
-
+Produto "1..1" *-- "1..*" ItemFichaTecnica : possui >
+ItemFichaTecnica "0..*" --> "1..1" Material : usa >
+Venda "0..*" --> "1..1" Produto : referente a >
 @enduml
