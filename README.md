@@ -1,7 +1,7 @@
 # Modelagem de Sistema de Gestão/Portfolio para Microempreendedora
 
-### Projeto desenvolvido na disciplina de Modelagem de sistemas na Universidade Federal de Juiz de Fora
-#### Propósito: Oferecer a uma artesã um sistema integrado para controle de estoque de materiais e disponibilização de um catálogo digital interativo para clientes
+Essse projeto visa oferecer a uma artesã um sistema integrado para controle de estoque de materiais e disponibilização de um catálogo digital interativo para clientes.
+Desenvolvido para a disciplina de Modelagem de sistemas na Universidade Federal de Juiz de Fora.
 
 
 ## Diagrama de classes
